@@ -14,3 +14,18 @@ Discussed what we would be working on: there was a multitude of proposals - sigh
 We finally did converge - I think? - to streaming the camera output to a web-page, and being able to control the microscope through a web-interface (hence not worrying anymore about the internal workings inside the Raspberry Pi).
 
 And agreed to a further meeting on Saturday 3:30pm BST. Not sure what we will discuss there: we're expecting a demo of the current kit, and an introduction to the software? It would be helpful if we could finalise in broad terms what we will be working on. 
+
+
+### Monday 15 May
+
+Morning: Converged on the features we'll want at the end of the project, and fleshed out the different components we'll need to achieve them. We decided that our end-goal, to be able to control the microscope and view its output from an external device, can be split off into two groups, one focusing on the interface between the Raspberry Pi and the motors & sensors, the other focusing on the interface between the Raspberry Pi and the external device. 
+
+The precise goals were documented in [here](https://docs.google.com/document/d/1QzkXOdFrkiqjfj2YdRiPwxmbORR5bd-4i0nzOWeweW4)
+
+Since the project proposal is due on Thursday, we have also discussed how we would proceed for that presentation. After consulting with Alexandre Kabla, the only written document will be on costing and parts needed - all the other items on the list will be delivered orally. 
+
+Fergus gave us a Raspberry Pi camera we'll use - many thanks to him!
+
+Followed the tutorial [here](https://frillip.com/using-your-raspberry-pi-3-as-a-wifi-access-point-with-hostapd/) and configured the Raspberry Pi as a WiFi hotspot.
+
+We agreed on how to split off the project proposal presentation. I'll be explaining the design of the Raspberry Pi - External Device interface, as a step towards our feature of being able to view and control the microscope from the external device (also including contingency plans!). Definitely I want to talk about our AGILE approach to getting features out, and also propose a rough design based on my internship experience last year (things might turn out slightly different as I investigate Flask/streaming). I also said I would work on a mockup of the website which will help us get feedback for our design. I'm planning to do this before we meet on Wednesday to rehearse for our Thursday presentation and gather feedback.
