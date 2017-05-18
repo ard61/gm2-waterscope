@@ -50,3 +50,27 @@ Kai Song got the Raspberry Pi camera to work, using the raspistill and raspivid 
 
 Prepare my part of the project proposal:
 *	get familiar with the different intermediate targets / maybe flesh them out a bit more, think where they could fail, think about the time each would take.
+
+
+### Wednesday 17 May
+
+Morning: Created a Trello board for our project to help with AGILE project management. In the 'backlog' list, I broke out intermediate steps that I'd like to achieve to go towards the project goals. 
+Afternoon: Met with the team to prepare the project proposal document and presentation. 
+
+
+### Thursday 18 May
+
+Morning pitch to Alexandre Kabla and Lara Allen. Feedback consisted of three items:
+*	Be more precise about the project timeline and explicitly explain that since we are following an AGILE project management technique, we have not set out a detailed roadmap that will bring us to the end-result, given that we cannot predict all the contingencies right now. Rather, we will focus on short-term features. 
+*	Make clear who the intended user is, and describe his activity
+*	In the risk assessment, evaluate the risk that the components/libraries we use might become obsolete.
+
+Afternoon:
+
+Discussed with Kai Song what our next target would be and organised ourselves on Trello (tasks and time estimate). We decided that we'll focus on getting streaming working for the interim presentation. Our first step is to investigate different streaming methods, and then shortlist with 2 solutions. We will then implement and compare the 2 solutions in the next week. 
+
+I documented my research in [doc/streaming_research_ard61.md](https://github.com/ard61/gm2-waterscope/blob/master/doc/streaming_research_ard61.md) The two solutions we shortlisted are Motion JPEG and WebRTC. 
+
+Next steps would be to do further research into these two solutions, maybe try some tutorials - I'll definitely follow the WebRTC tutorial. And then it would be nice to write a document comparing the two. 
+
+Although we clearly have split off work individually, I'm thinking it would still be nice to work together, for morale :) and also to give each other help and discuss difficult decisions.
