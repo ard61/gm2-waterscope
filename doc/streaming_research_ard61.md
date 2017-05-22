@@ -45,3 +45,14 @@ It seems there are 3 commonly-used standards for adaptive streaming i.e. changin
 	*	What would be an acceptable frequency of error?
 *	Robustness - can it recover gracefully from errors?
 	*	Ideally just reloading the webpage would solve the problem, or not even having to. 
+
+
+### Notes on implementing streaming
+
+Ok. So for streaming to happen we need 2 things:
+*	Signaling: At the most basic level, it's telling the server to start/stop sending data. But it could also involve exchanging information such as addresses and media capabilities.
+*	Media: Server-side, we need to take the video from the RPi camera, encode it, payload it into chunks, send those chunks over the network (this doesn't need to be done by an actual server if we have a signaling server to control the media flow on-the-fly.) Client-side, we need to receive those chunks, reconstruct and decode the video, and display it. 
+	*	For signaling, we can probably do away with any kind of web server, though preferably one that talks the same language as the client's signaling side. Also we want the signaling server to configure the media flow so a way to have live configuration would be awesome. 
+	*	For media, we need something that can take the video from the RPi camera, encode it into some sort of codec, payload it and send it via RTP. Ideally it would be easily configured on-the-fly i.e. without restarting the whole pipeline. And then we need the media stream to be decoded by the client. 
+		*	The obvious candidate for this is GStreamer. Here are 2 tutorials explaining the server-side picture (but not the web-client side): [this](http://www.einarsundgren.se/gstreamer-basic-real-time-streaming-tutorial/) and [this](http://www.z25.org/static/_rd_/videostreaming_intro_plab/) and finally [this tutorial explaining how to combine with raspivid](http://www.raspberry-projects.com/pi/pi-hardware/raspberry-pi-camera/streaming-video-using-gstreamer)
+		*	Apparently there are resolution problems when attempting to access Pi camera video from a browser, see [this thread](https://www.raspberrypi.org/forums/viewtopic.php?f=43&t=137549). So using getUserMedia() to obtain video is precluded. 
