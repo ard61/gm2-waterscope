@@ -56,3 +56,10 @@ Ok. So for streaming to happen we need 2 things:
 	*	For media, we need something that can take the video from the RPi camera, encode it into some sort of codec, payload it and send it via RTP. Ideally it would be easily configured on-the-fly i.e. without restarting the whole pipeline. And then we need the media stream to be decoded by the client. 
 		*	The obvious candidate for this is GStreamer. Here are 2 tutorials explaining the server-side picture (but not the web-client side): [this](http://www.einarsundgren.se/gstreamer-basic-real-time-streaming-tutorial/) and [this](http://www.z25.org/static/_rd_/videostreaming_intro_plab/) and finally [this tutorial explaining how to combine with raspivid](http://www.raspberry-projects.com/pi/pi-hardware/raspberry-pi-camera/streaming-video-using-gstreamer)
 		*	Apparently there are resolution problems when attempting to access Pi camera video from a browser, see [this thread](https://www.raspberrypi.org/forums/viewtopic.php?f=43&t=137549). So using getUserMedia() to obtain video is precluded. 
+
+
+### Compte-rendu: Why I decide to abandon using GStreamer
+
+GStreamer seemed a compelling choice for streaming video to a webpage, because it is inherently fast, being written in C, and has a modular pipeline architecture that makes it easy to take video from the camera, encode it, chunk it and send it through a network interface. However, the encoding algorithms I was considering to use are designed to reduce bandwidth at the cost of latency, and are hence not adapted to our use-case, where bandwidth on the WiFi network between the Raspberry Pi and the external device is more than sufficient, and latency is at a premium. When trying to implement sending video to a webpage using GStreamer, I indeed found that the received video intermittently paused. Hence, it makes sense to stick with the Motion-JPEG streaming option that Kai Song has been implementing. 
+
+
