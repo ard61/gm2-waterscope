@@ -87,6 +87,9 @@ In fact, I'm having doubts on the whole idea of taking video from the Pi Camera,
 We'll meet on Thursday and this will be a good time to discuss how we follow on. 
 
 
+Kai Song got the Motion-JPEG solution working! It has a latency of ~1s and a frame rate of ~2fps which is definitely not very comfortable to look at. We'll need to discuss what to aim for. 
+
+
 ### Thursday 25 May
 
 Morning: 
