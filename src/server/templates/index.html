@@ -8,7 +8,7 @@
   const WS_STREAM_CTL_URL = 'http://172.24.1.1:5000/start_stream'
 
   function start_stream(width=1280, height=720, fps=10) {
-    $.get('WS_STREAM_CTL_URL', {
+    $.get(WS_STREAM_CTL_URL, {
       width: width,
       height: height,
       fps: fps
