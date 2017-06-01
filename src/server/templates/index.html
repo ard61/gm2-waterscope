@@ -2,15 +2,33 @@
 <html>
 
 <head>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
   <script>
   "use strict";
-  function
+  const WS_STREAM_CTL_URL = 'http://172.24.1.1:5000/start_stream'
+
+  function start_stream(width=1280, height=720, fps=10) {
+    $.get('WS_STREAM_CTL_URL', {
+      width: width,
+      height: height,
+      fps: fps
+    });
+  }
+
+  function load_stream(){
+    $('#stream_container').empty()
+      .append('<img id="stream" width="1280" height="720" src="http://172.24.1.1:8080/?action=stream" />');
+  }
+
+  start_stream();
+  load_stream();
   </script>
-  <title>Flask + MJPEG streaming test</title>
+  <title>WaterScope</title>
 </head>
 
 <body>
-  <img width="{{ default_width }}" height="{{ default_height }}" src="http://172.24.1.1:8080/?action=stream" />
+  <div id="stream_container">
+  </div>
 </body>
 
 </html>

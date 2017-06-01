@@ -15,8 +15,9 @@ class MJpegStream():
     def stop(self):
         self.proc.terminate()
 
-    def create_args(self, width=1280, height=720, fps=10):
-        return ['mjpg_streamer', '-o', 'output_http.so -w ./www', '-i', 'input_raspicam.so -x {} -y {} -fps {}'.format(width, height, fps)]
+    def create_args(self, width=1280, height=720, fps=10, sharpness=0, contrast=0, brightness=50, saturation=0):
+        return ['mjpg_streamer', '-o', 'output_http.so -w ./www', '-i', 
+                'input_raspicam.so -x {0} -y {1} -fps {2} -sh {3} -co {4} -br {5} -sa {6}'.format(width, height, fps, sharpness, contrast, brightness, saturation)]
 
 stream = MJpegStream()
 
