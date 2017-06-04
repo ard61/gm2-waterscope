@@ -3,9 +3,9 @@ import time
 import subprocess
 import flask
 
-import fergboard_motors  # fergboard_motors.py
-
-motors = fergboard_motors.Motors()
+# TODO: FIX FileNotFoundError when trying to connect to motor board
+#import fergboard_motors  # fergboard_motors.py
+#motors = fergboard_motors.Motors()
 
 app = flask.Flask(__name__)
 
