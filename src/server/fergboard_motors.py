@@ -1,6 +1,6 @@
 import smbus
 
-class Motors()
+class Motors():
     def __init__(self):
         self.bus = smbus.SMBus(1)
 
