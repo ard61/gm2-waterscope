@@ -41,6 +41,11 @@
     return `${CAPTURE_URL}?sharpness=${sharpness}&contrast=${contrast}&brightness=${brightness}&saturation={saturation}`;
   }
 
+  function create_capture_link(){
+    $('#capture_link_container').empty()
+      .append(`<a href="${capture_url()}" />`);
+  }
+
   function move(x=0, y=0 , z=0){
     $.ajax({
       url: WS_MOTOR_CTL_URL,
@@ -55,14 +60,20 @@
     });
   }
 
+  
   // Execute this when document has loaded
-  $(load_stream);
+  $(function(){
+    load_stream();
+    create_capture_link();
+  });
   </script>
   <title>WaterScope</title>
 </head>
 
 <body>
   <div id="stream_container">
+  </div>
+  <div id="capture_link_container">
   </div>
 </body>
 
