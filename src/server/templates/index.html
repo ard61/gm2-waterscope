@@ -2,7 +2,8 @@
 <html>
 
 <head>
-  <script src="static/jquery_3.2.1.min.js"></script>
+<title>Waterscope</title>  
+<script src="static/jquery_3.2.1.min.js"></script>
   <script>
   "use strict";
   const STREAM_CTL_URL = 'http://172.24.1.1:5000/start_stream';
@@ -71,9 +72,55 @@
 </head>
 
 <body>
-  <div id="stream_container">
+  <body>
+  <p class="title">WaterScope</p>
+  <div id="stream_container"></div>
+  <div class="button" id="capture_link_container"> <button class="click">Capture Photo</button></div>
+  
+  <br/>
+  
+  <h2 class="header">Motor Control</h2>
+  <div class="button"><button class="plane_control">&#x25B2</button>
+  <div class="button">
+    <button class="plane_control">&#x25C0</button>
+    <button class="plane_control">&#x25BC</button>
+    <button class="plane_control">&#x25BA</button>
   </div>
-  <div id="capture_link_container">
+  
+  <br/>
+  
+  <h2 class="header">Camera Settings</h2>
+  <div class="tab">
+    <button class="tablinks" onclick="openSetting(event, 'Sharpness')">Sharpness</button>
+    <button class="tablinks" onclick="openSetting(event, 'Brightness')">Brightness</button>
+    <button class="tablinks" onclick="openSetting(event, 'Contrast')">Contrast</button>
+    <button class="tablinks" onclick="openSetting(event, 'Saturation')">Saturation</button>
+  </div>
+
+<div id="Sharpness" class="tabcontent">
+  <p>Change the sharpness of the video stream</p>
+  <input id="contrast" type="range" min="100" max="500" step="10" />
+  <input type="text" id="textInput" value="">
+</div>
+
+<div id="Brightness" class="tabcontent">
+  <p>Change the brightness of the video stream</p>
+  <input id="contrast" type="range" min="100" max="500" step="10" />
+  <input type="text" id="textInput" value="">
+</div>
+
+<div id="Contrast" class="tabcontent">
+  <p>Change the contrast of the video stream</p>
+  <input id="contrast" type="range" min="100" max="500" step="10" />
+  <input type="text" id="textInput" value="">
+</div>
+  
+  <div id="Saturation" class="tabcontent">
+    <p>Change the saturation of the video stream</p>
+  <input id="contrast" type="range" min="100" max="500" step="10" />
+  <input type="text" id="textInput" value="">
+</div>
+  <div >
   </div>
 </body>
 
