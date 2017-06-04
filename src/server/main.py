@@ -55,7 +55,7 @@ class MJpegStream():
         return ['mjpg_streamer', '-o', 'output_http.so -w ./www', '-i', 
                 'input_raspicam.so -x {0} -y {1} -fps {2} -sh {3} -co {4} -br {5} -sa {6}'
                     .format(params['width'],
-                            params['height'], 
+                            params['height'],
                             params['fps'], 
                             params['sharpness'], 
                             params['contrast'], 
@@ -77,32 +77,32 @@ class MJpegStream():
                                   (640, 480),
                                   (320, 240)]
         if (width, height) not in supported_resolutions:
-            width, height = (self.params.get('width', default=1280),
+            width, height = (self.params.get('width', 1280),
                              self.params.get('height', 720))
         supported_fps = range(1, 31)
         if fps not in supported_fps:
-            fps = self.params.get('fps', default=10)
+            fps = self.params.get('fps', 10)
         if sharpness not in range(-100,101):
-            sharpness = self.params.get('fps', default=0)
+            sharpness = self.params.get('fps', 0)
         if contrast not in range(-100,101):
-            contrast = self.params.get('contrast', default=0)
+            contrast = self.params.get('contrast', 0)
         if brightness not in range(0,101):
-            brightness = self.params.get('brightness', default=50)
+            brightness = self.params.get('brightness', 50)
         if saturation not in range(-100,101):
-            saturation = self.params.get('saturation', default=0)
+            saturation = self.params.get('saturation', 0)
 
         return {
-            "width": width
-            "height": height
-            "fps": fps
-            "sharpness": sharpness
-            "contrast": contrast
-            "brightness": brightness
-            "saturation": saturation
+            "width": width,
+            "height": height,
+            "fps": fps,
+            "sharpness": sharpness,
+            "contrast": contrast,
+            "brightness": brightness,
+            "saturation": saturation,
         }
 
 stream = MJpegStream()
-stream.start()
+stream.start(**stream.safe_args())
 
 @app.route('/', methods=['GET'])
 def index():
@@ -115,7 +115,7 @@ def start_stream():
     properly, and returns success/error.
     """
     get_args = stream.safe_args(flask.request.args)
-    if stream.start(get_args):
+    if stream.start(**get_args):
         return flask.Response(status="200 OK")
     else:
         return flask.Response(status="500 INTERNAL SERVER ERROR")
@@ -146,9 +146,9 @@ def capture():
 @app.route('/move', methods=['GET'])
 def move():
     get_args = flask.request.args
-    x = get_args.get('X', default=0)
-    y = get_args.get('Y', default=0)
-    z = get_args.get('Z', default=0)
+    x = get_args.get('X', 0)
+    y = get_args.get('Y', 0)
+    z = get_args.get('Z', 0)
 
     motors.move(x, y, z)
     return flask.Response(status="200 OK")
