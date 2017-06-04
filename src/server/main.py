@@ -3,9 +3,9 @@ import time
 import subprocess
 import flask
 
-import fergboard_motor  # fergboard_motor.py
+import fergboard_motors  # fergboard_motors.py
 
-motors = fergboard_motor.Motors()
+motors = fergboard_motors.Motors()
 
 app = flask.Flask(__name__)
 
@@ -58,27 +58,42 @@ def start_stream():
     width = get_args.get('width')
     height = get_args.get('height')
     fps = get_args.get('fps')
-    sharpness = get_args.get('saturation')
-    contrast = get_args.get('sharpness')
+    sharpness = get_args.get('sharpness')
+    contrast = get_args.get('contrast')
     brightness = get_args.get('brightness')
     saturation = get_args.get('saturation')
 
-    # Do some error checking
+    # Do some error checking for security, as we pass those values on to mjpg_streamer.
     supported_resolutions = [(1280, 720),
                               (1920, 1080),
                               (640, 480),
                               (320, 240)]
     if (width, height) not in supported_resolutions:
         width, height = 1280, 720
-
     supported_fps = range(1, 31)
     if fps not in supported_fps:
         fps = 10
+    if sharpness not in range(-100,101):
+        sharpness = 0
+    if contrast not in range(-100,101):
+        contrast = 0
+    if brightness not in range(0,101):
+        brightness = 50
+    if saturation not in range(-100,101):
+        saturation = 0
 
     if stream.start(width=width, height=height, fps=fps):
         return flask.Response(status="200 OK")
     else:
         return flask.Response(status="500 INTERNAL SERVER ERROR")
+
+@app.route('/capture', methods=['GET'])
+def capture():
+    """
+    Capture a still photo at max resolution and send it to the user
+    """
+    flask.send_file("capture.jpg", mimetype="image/jpeg")
+
 
 @app.route('/move', methods=['GET'])
 def move():
