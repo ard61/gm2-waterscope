@@ -1,3 +1,5 @@
+import sys
+import time
 import subprocess
 import flask
 
@@ -10,7 +12,23 @@ class MJpegStream():
     def start(self, *args, **kwargs):
         if self.proc:
             self.stop()
-        self.proc = subprocess.Popen(self.create_args(*args, **kwargs), cwd='~/mjpg-streamer-master/mjpg-streamer-experimental')
+        self.proc = subprocess.Popen(self.create_args(*args, **kwargs), stderr=subprocess.PIPE, universal_newlines=True)
+
+        # Block until we have read the line "Encoder Buffer Size" from stderr.
+        while self.proc.poll() is None:
+            time.sleep(0.01)
+            line = self.proc.stderr.readline()
+            if line != "":
+                sys.stdout.write(line)
+                sys.stdout.flush()
+                if "Encoder Buffer Size" in line:
+                    print("mjpg-streamer successfully started!")
+                    return True
+
+        # If mjpg-streamer stopped, it means there was an error.
+        sys.stdout.write(self.proc.stderr.read())
+        sys.stderr.write("Error starting mjpg-streamer!\n")
+        return False
 
     def stop(self):
         self.proc.terminate()
@@ -20,6 +38,7 @@ class MJpegStream():
                 'input_raspicam.so -x {0} -y {1} -fps {2} -sh {3} -co {4} -br {5} -sa {6}'.format(width, height, fps, sharpness, contrast, brightness, saturation)]
 
 stream = MJpegStream()
+stream.start()
 
 @app.route('/', methods=['GET'])
 def index():
@@ -27,10 +46,18 @@ def index():
 
 @app.route('/start_stream', methods=['GET'])
 def start_stream():
+    """
+    Restarts the mjpg-streamer stream, waits to see if it has completed
+    properly, and returns success/error.
+    """
     get_args = flask.request.args
     width = get_args.get('width')
     height = get_args.get('height')
     fps = get_args.get('fps')
+    sharpness = get_args.get('saturation')
+    contrast = get_args.get('sharpness')
+    brightness = get_args.get('brightness')
+    saturation = get_args.get('saturation')
 
     # Do some error checking
     supported_resolutions = [(1280, 720),
@@ -40,8 +67,21 @@ def start_stream():
     if (width, height) not in supported_resolutions:
         width, height = 1280, 720
 
-    supported_fps = range(1, 30)
+    supported_fps = range(1, 31)
     if fps not in supported_fps:
         fps = 10
 
-    stream.start(width=width, height=height, fps=fps)
+    if stream.start(width=width, height=height, fps=fps):
+        return flask.Response(status="200 OK")
+    else:
+        return flask.Response(status="500 INTERNAL SERVER ERROR")
+
+@app.route('/move', methods=['GET'])
+def move():
+    get_args = flask.request.args
+    x = get_args.get('X', default=0)
+    y = get_args.get('Y', default=0)
+    z = get_args.get('Z', default=0)
+
+    motors.move(x, y, z)
+    return flask.Response(status="200 OK")

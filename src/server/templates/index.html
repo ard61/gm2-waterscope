@@ -5,23 +5,36 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
   <script>
   "use strict";
-  const WS_STREAM_CTL_URL = 'http://172.24.1.1:5000/start_stream'
+  const WS_STREAM_CTL_URL = 'http://172.24.1.1:5000/start_stream';
+  const WS_STREAM_URL = 'http://172.24.1.1:8080/?action=stream';
 
-  function start_stream(width=1280, height=720, fps=10) {
-    $.get(WS_STREAM_CTL_URL, {
-      width: width,
-      height: height,
-      fps: fps
+  function start_stream(width=1280, height=720, fps=10, sharpness=0, contrast=0, brightness=50, saturation=0) {
+    $.ajax({
+      url: WS_STREAM_CTL_URL,
+      data: {
+        width: width,
+        height: height,
+        fps: fps,
+        sharpness: sharpness,
+        contrast: contrast,
+        brightness: brightness,
+        saturation: saturation,
+      },
+      success: function(){
+        load_stream();
+      },
+      error: function(){
+        alert('Could not restart stream with new parameters')
+      }
     });
   }
 
-  function load_stream(){
+  function load_stream(width=1280, height=720, fps=10){
     $('#stream_container').empty()
-      .append('<img id="stream" width="1280" height="720" src="http://172.24.1.1:8080/?action=stream" />');
+      .append(`<img id="stream" width="${width}" height="${height}" src="${WS_STREAM_URL}" />`);
   }
 
-  start_stream();
-  load_stream();
+  $(load_stream);
   </script>
   <title>WaterScope</title>
 </head>
