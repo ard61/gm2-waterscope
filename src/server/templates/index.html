@@ -7,9 +7,34 @@
   <script>
   "use strict";
 
+  let camera_params = {
+    width: 1280,
+    height: 720,
+    fps: 10,
+    sharpness: 0,
+    brightness: 50,
+    contrast: 0,
+    saturation: 0,
+  };
+
+  function onChangeSlider(){
+    let param_name = $(this).parent().getId();
+    camera_params[param_name] = $(this).prop('value');
+    $(this).siblings('input [type="text"]').prop('value', camera_params[param_name]);
+  }
+
+  function onChangeText(){
+    let param_name = $(this).parent().getId();
+    camera_params[param_name] = $(this).prop('value');
+    $(this).siblings('input [type="range"]').prop('value', camera_params[param_name]);
+  }
+
+  $('.tabcontent > input [type="range"]').on("change", onChangeSlider);
+  $('.tabcontent > input [type="text"]').on("change", onChangeText);
+
   function openSetting(evt, SettingName) {
       // Declare all variables
-      var i, tabcontent, tablinks;
+      let i, tabcontent, tablinks;
 
       // Get all elements with class="tabcontent" and hide them
       tabcontent = document.getElementsByClassName("tabcontent");
@@ -28,28 +53,15 @@
       evt.currentTarget.className += " active";
   }
 
-  //Update the value of camera settings
-  function updateTextInput(val) {
-          document.getElementById('textInput').value=val; 
-  }
-
-  const STREAM_CTL_URL = 'http://172.24.1.1:5000/start_stream';
-  const MOTOR_CTL_URL = 'http://172.24.1.1:5000/move';
-  const CAPTURE_URL = 'http://172.24.1.1:5000/capture';
+  const STREAM_CTL_URL = 'start_stream';
+  const MOTOR_CTL_URL = 'move';
+  const CAPTURE_URL = 'capture';
   const STREAM_URL = 'http://172.24.1.1:8080/?action=stream';
 
-  function start_stream(width=1280, height=720, fps=10, sharpness=0, contrast=0, brightness=50, saturation=0){
+  function start_stream(params){
     $.ajax({
       url: STREAM_CTL_URL,
-      data: {
-        width: width,
-        height: height,
-        fps: fps,
-        sharpness: sharpness,
-        contrast: contrast,
-        brightness: brightness,
-        saturation: saturation,
-      },
+      data: params,
       success: function(){
         load_stream();
       },
@@ -59,24 +71,30 @@
     });
   }
 
-  function load_stream(width=1280, height=720, fps=10){
+  function load_stream(width=1280, height=720){
     $('#stream_container').empty()
       .append(`<img id="stream" width="${width}" height="${height}" src="${STREAM_URL}" />`);
   }
 
-  function capture_url(sharpness=0, contrast=0, brightness=50, saturation=0){
-    // Returns the URL that you need to go to to capture and download an image.
-    return `${CAPTURE_URL}?sharpness=${sharpness}&contrast=${contrast}&brightness=${brightness}&saturation=${saturation}`;
-  }
-
-  function create_capture_link(){
-    $('#capture_link_container').empty()
-      .append(`<a href="${capture_url()}" download>Capture and Download Image</a>`);
+  function capture(params){
+    $.ajax({
+      url: CAPTURE_URL,
+      data: params,
+      success: function(){
+        load_stream();
+        // Simulate the user clicking on the hidden download link to prompt to save the image
+        $('#capture_link').trigger('click');
+      }
+      error: function(){
+        load_stream();
+        alert('Error when attempting to capture image');
+      }
+    });
   }
 
   function move(x=0, y=0 , z=0){
     $.ajax({
-      url: WS_MOTOR_CTL_URL,
+      url: MOTOR_CTL_URL,
       data: {
         x: x,
         y: y,
@@ -92,17 +110,18 @@
   // Execute this when document has loaded
   $(function(){
     load_stream();
-    create_capture_link();
   });
   </script>
   <title>WaterScope</title>
 </head>
 
 <body>
-  <body>
   <p class="title">WaterScope</p>
   <div id="stream_container"></div>
-  <div class="button" id="capture_link_container"> <button class="click">Capture Photo</button></div>
+  <div class="button">
+    <button class="click" onclick="capture(camera_params);">Capture Photo</button>
+    <a id="capture_link" href="static/capture.jpg" hidden download></a>
+  </div>
   
   <br/>
   
@@ -118,37 +137,36 @@
   
   <h2 class="header">Camera Settings</h2>
   <div class="tab">
-    <button class="tablinks" onclick="openSetting(event, 'Sharpness')">Sharpness</button>
-    <button class="tablinks" onclick="openSetting(event, 'Brightness')">Brightness</button>
-    <button class="tablinks" onclick="openSetting(event, 'Contrast')">Contrast</button>
-    <button class="tablinks" onclick="openSetting(event, 'Saturation')">Saturation</button>
+    <button class="tablinks" onclick="openSetting(event, 'sharpness')">Sharpness</button>
+    <button class="tablinks" onclick="openSetting(event, 'brightness')">Brightness</button>
+    <button class="tablinks" onclick="openSetting(event, 'contrast')">Contrast</button>
+    <button class="tablinks" onclick="openSetting(event, 'saturation')">Saturation</button>
   </div>
 
-<div id="Sharpness" class="tabcontent">
-  <p>Change the sharpness of the video stream</p>
-  <input id="contrast" type="range" min="100" max="500" step="10" />
-  <input type="text" id="textInput" value="">
-</div>
+  <div id="sharpness" class="tabcontent">
+    <p>Change the sharpness of the video stream</p>
+    <input type="range" min="-100" max="100" step="10" />
+    <input type="text" value="0">
+  </div>
 
-<div id="Brightness" class="tabcontent">
-  <p>Change the brightness of the video stream</p>
-  <input id="contrast" type="range" min="100" max="500" step="10" />
-  <input type="text" id="textInput" value="">
-</div>
+  <div id="brightness" class="tabcontent">
+    <p>Change the brightness of the video stream</p>
+    <input type="range" min="0" max="100" step="10" />
+    <input type="text" value="50">
+  </div>
 
-<div id="Contrast" class="tabcontent">
-  <p>Change the contrast of the video stream</p>
-  <input id="contrast" type="range" min="100" max="500" step="10" />
-  <input type="text" id="textInput" value="">
-</div>
-  
-  <div id="Saturation" class="tabcontent">
+  <div id="contrast" class="tabcontent">
+    <p>Change the contrast of the video stream</p>
+    <input type="range" min="-100" max="100" step="10" />
+    <input type="text" value="0">
+  </div>
+    
+  <div id="saturation" class="tabcontent">
     <p>Change the saturation of the video stream</p>
-  <input id="contrast" type="range" min="100" max="500" step="10" />
-  <input type="text" id="textInput" value="">
-</div>
+    <input type="range" min="-100" max="100" step="10" />
+    <input type="text" value="0">
+  </div>
   <div >
   </div>
 </body>
-
 </html>

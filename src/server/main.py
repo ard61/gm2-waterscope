@@ -123,7 +123,7 @@ def start_stream():
 @app.route('/capture', methods=['GET'])
 def capture():
     """
-    Capture a still photo at max resolution and send it to the user
+    Capture a still photo at max resolution and save it at static/capture.jpg
     """
 
     # Need to stop the stream first
@@ -132,7 +132,7 @@ def capture():
     get_args = stream.safe_args(**flask.request.args)
 
     raspistill_args = ['raspistill', '--width', '2592', '--height', '1944',
-                       '--nopreview', '--output', 'capture.jpg', '--timeout', '1500',
+                       '--nopreview', '--output', 'static/capture.jpg', '--timeout', '1500',
                        '--quality', '100', '--thumb', 'none',
                        '-sh', str(get_args['sharpness']), '-co', str(get_args['contrast']),
                        '-br', str(get_args['brightness']), '-sa', str(get_args['saturation'])]
@@ -145,7 +145,7 @@ def capture():
     stream.start(**stream_args)
 
     if raspistill_proc.returncode == 0:
-        return flask.send_file("capture.jpg", mimetype="image/jpeg")
+        return flask.Response(status="200 OK")
     else:
         return flask.Response(status="500 INTERNAL SERVER ERROR")
 
