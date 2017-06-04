@@ -2,15 +2,16 @@
 <html>
 
 <head>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="static/jquery_3.2.1.min.js"></script>
   <script>
   "use strict";
-  const WS_STREAM_CTL_URL = 'http://172.24.1.1:5000/start_stream';
-  const WS_STREAM_URL = 'http://172.24.1.1:8080/?action=stream';
+  const STREAM_CTL_URL = 'http://172.24.1.1:5000/start_stream';
+  const MOTOR_CTL_URL = 'http://172.24.1.1:5000/move';
+  const STREAM_URL = 'http://172.24.1.1:8080/?action=stream';
 
   function start_stream(width=1280, height=720, fps=10, sharpness=0, contrast=0, brightness=50, saturation=0) {
     $.ajax({
-      url: WS_STREAM_CTL_URL,
+      url: STREAM_CTL_URL,
       data: {
         width: width,
         height: height,
@@ -24,16 +25,31 @@
         load_stream();
       },
       error: function(){
-        alert('Could not restart stream with new parameters')
+        alert('Could not restart stream with new parameters');
       }
     });
   }
 
   function load_stream(width=1280, height=720, fps=10){
     $('#stream_container').empty()
-      .append(`<img id="stream" width="${width}" height="${height}" src="${WS_STREAM_URL}" />`);
+      .append(`<img id="stream" width="${width}" height="${height}" src="${STREAM_URL}" />`);
   }
 
+  function move(x=0, y=0 , z=0){
+    $.ajax({
+      url: WS_MOTOR_CTL_URL,
+      data: {
+        x: x,
+        y: y,
+        z: z,
+      },
+      error: function(){
+        alert('Error when attempting to move motors');
+      }
+    })
+  }
+
+  // Execute this when document has loaded
   $(load_stream);
   </script>
   <title>WaterScope</title>

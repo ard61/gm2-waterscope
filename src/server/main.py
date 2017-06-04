@@ -3,6 +3,10 @@ import time
 import subprocess
 import flask
 
+import fergboard_motor  # fergboard_motor.py
+
+motors = fergboard_motor.Motors()
+
 app = flask.Flask(__name__)
 
 class MJpegStream():
