@@ -38,12 +38,12 @@
 
   function capture_url(sharpness=0, contrast=0, brightness=50, saturation=0){
     // Returns the URL that you need to go to to capture and download an image.
-    return `${CAPTURE_URL}?sharpness=${sharpness}&contrast=${contrast}&brightness=${brightness}&saturation={saturation}`;
+    return `${CAPTURE_URL}?sharpness=${sharpness}&contrast=${contrast}&brightness=${brightness}&saturation=${saturation}`;
   }
 
   function create_capture_link(){
     $('#capture_link_container').empty()
-      .append(`<a href="${capture_url()}">Capture and Save</a>`);
+      .append(`<a href="${capture_url()}" download>Capture and Download Image</a>`);
   }
 
   function move(x=0, y=0 , z=0){

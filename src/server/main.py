@@ -114,7 +114,7 @@ def start_stream():
     Restarts the mjpg-streamer stream, waits to see if it has completed
     properly, and returns success/error.
     """
-    get_args = stream.safe_args(flask.request.args)
+    get_args = stream.safe_args(**flask.request.args)
     if stream.start(**get_args):
         return flask.Response(status="200 OK")
     else:
@@ -129,18 +129,25 @@ def capture():
     # Need to stop the stream first
     stream.stop()
 
-    get_args = stream.safe_args(flask.request.args)
+    get_args = stream.safe_args(**flask.request.args)
 
     raspistill_args = ['raspistill', '--width', '2592', '--height', '1944',
                        '--nopreview', '--output', 'capture.jpg', '--timeout', '1500',
                        '--quality', '100', '--thumb', 'none',
-                       '-sh', get_args['sharpness'], '-co', get_args['contrast'],
-                       '-br', get_args['brightness'], '-sa', get_args['saturation']]
-    subprocess.run(raspistill_args)
+                       '-sh', str(get_args['sharpness']), '-co', str(get_args['contrast']),
+                       '-br', str(get_args['brightness']), '-sa', str(get_args['saturation'])]
+    raspistill_proc = subprocess.Popen(raspistill_args)
+    raspistill_proc.wait()
+        
 
     # Start the stream again, with the previous parameters implied
-    stream.start()
-    flask.send_file("capture.jpg", mimetype="image/jpeg")
+    stream_args = stream.safe_args()
+    stream.start(**stream_args)
+
+    if raspistill_proc.returncode == 0:
+        return flask.send_file("capture.jpg", mimetype="image/jpeg")
+    else:
+        return flask.Response(status="500 INTERNAL SERVER ERROR")
 
 
 @app.route('/move', methods=['GET'])
