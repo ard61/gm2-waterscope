@@ -7,9 +7,10 @@
   "use strict";
   const STREAM_CTL_URL = 'http://172.24.1.1:5000/start_stream';
   const MOTOR_CTL_URL = 'http://172.24.1.1:5000/move';
+  const CAPTURE_URL = 'http://172.24.1.1:5000/capture';
   const STREAM_URL = 'http://172.24.1.1:8080/?action=stream';
 
-  function start_stream(width=1280, height=720, fps=10, sharpness=0, contrast=0, brightness=50, saturation=0) {
+  function start_stream(width=1280, height=720, fps=10, sharpness=0, contrast=0, brightness=50, saturation=0){
     $.ajax({
       url: STREAM_CTL_URL,
       data: {
@@ -35,6 +36,11 @@
       .append(`<img id="stream" width="${width}" height="${height}" src="${STREAM_URL}" />`);
   }
 
+  function capture_url(sharpness=0, contrast=0, brightness=50, saturation=0){
+    // Returns the URL that you need to go to to capture and download an image.
+    return `${CAPTURE_URL}?sharpness=${sharpness}&contrast=${contrast}&brightness=${brightness}&saturation={saturation}`;
+  }
+
   function move(x=0, y=0 , z=0){
     $.ajax({
       url: WS_MOTOR_CTL_URL,
@@ -46,7 +52,7 @@
       error: function(){
         alert('Error when attempting to move motors');
       }
-    })
+    });
   }
 
   // Execute this when document has loaded
