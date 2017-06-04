@@ -6,6 +6,33 @@
 <script src="static/jquery_3.2.1.min.js"></script>
   <script>
   "use strict";
+
+function openSetting(evt, SettingName) {
+    // Declare all variables
+    var i, tabcontent, tablinks;
+
+    // Get all elements with class="tabcontent" and hide them
+    tabcontent = document.getElementsByClassName("tabcontent");
+    for (i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].style.display = "none";
+    }
+
+    // Get all elements with class="tablinks" and remove the class "active"
+    tablinks = document.getElementsByClassName("tablinks");
+    for (i = 0; i < tablinks.length; i++) {
+        tablinks[i].className = tablinks[i].className.replace(" active", "");
+    }
+
+    // Show the current tab, and add an "active" class to the button that opened the tab
+    document.getElementById(SettingName).style.display = "block";
+    evt.currentTarget.className += " active";
+}
+
+//Update the value of camera settings
+function updateTextInput(val) {
+          document.getElementById('textInput').value=val; 
+        }
+
   const STREAM_CTL_URL = 'http://172.24.1.1:5000/start_stream';
   const MOTOR_CTL_URL = 'http://172.24.1.1:5000/move';
   const CAPTURE_URL = 'http://172.24.1.1:5000/capture';
