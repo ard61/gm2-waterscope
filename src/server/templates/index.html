@@ -60,7 +60,7 @@
       url: STREAM_CTL_URL,
       data: params,
       success: function(){
-        load_stream();
+        load_stream(params['width'], params['height']);
       },
       error: function(){
         alert('Could not restart stream with new parameters');
@@ -70,7 +70,7 @@
 
   function load_stream(width=1280, height=720){
     $('#stream_container').empty()
-      .append(`<img id="stream" width="${width}" height="${height}" src="${STREAM_URL}" />`);
+      .append(`<img id="stream" width="${width}" height="${height}" src="${STREAM_URL}" style="display:block; text-align:center;"/>`);
   }
 
   function capture(params){
@@ -78,12 +78,12 @@
       url: CAPTURE_URL,
       data: params,
       success: function(){
-        load_stream();
+        load_stream(params['width'], params['height']);
         // Simulate the user clicking on the hidden download link to prompt to save the image
         $('#capture_link')[0].click();
       },
       error: function(){
-        load_stream();
+        load_stream(params['width'], params['height']);
         alert('Error when attempting to capture image');
       }
     });
@@ -106,7 +106,7 @@
   
   // Execute this when document has loaded
   $(function(){
-    load_stream();
+    load_stream(camera_params['width'], camera_params['height']);
     $('.tabcontent > input[type="range"]').each(function(){
       $(this).on("change", function(){
         onChangeSlider(this);
