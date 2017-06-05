@@ -34,7 +34,7 @@ class Arduino:
         Otherwise, returns LED status
         """
         a = self.arduino
-        if led_state == True
+        if led_state == True:
             a.digitalWrite(PIN_LED, a.HIGH)
             self.led_state = True
         elif led_state == False:
