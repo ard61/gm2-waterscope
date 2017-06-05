@@ -70,7 +70,7 @@
 
   function load_stream(width=1280, height=720){
     $('#stream_container').empty()
-      .append(`<img id="stream" width="${width}" height="${height}" src="${STREAM_URL}" style="display:block; text-align:center;"/>`);
+      .append(`<img id="stream" width="${width}" height="${height}" src="${STREAM_URL}" style=""/>`);
   }
 
   function capture(params){
@@ -124,7 +124,7 @@
 
 <body>
   <p class="title">WaterScope</p>
-  <div id="stream_container"></div>
+  <div id="stream_container" class="stream_conatiner button"></div>
   <div class="button">
     <button class="click" onclick="capture(camera_params);">Capture Photo</button>
     <a id="capture_link" href="static/capture.jpg" hidden download>Download</a>
