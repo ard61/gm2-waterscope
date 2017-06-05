@@ -17,20 +17,17 @@
     saturation: 0,
   };
 
-  function onChangeSlider(){
-    let param_name = $(this).parent().getId();
-    camera_params[param_name] = $(this).prop('value');
-    $(this).siblings('input [type="text"]').prop('value', camera_params[param_name]);
+  function onChangeSlider(obj){
+    let param_name = $(obj).parent().prop("id");
+    camera_params[param_name] = $(obj).prop('value');
+    $(obj).siblings('input[type="text"]').prop('value', camera_params[param_name]);
   }
 
-  function onChangeText(){
-    let param_name = $(this).parent().getId();
-    camera_params[param_name] = $(this).prop('value');
-    $(this).siblings('input [type="range"]').prop('value', camera_params[param_name]);
+  function onChangeText(obj){
+    let param_name = $(obj).parent().prop("id");
+    camera_params[param_name] = $(obj).prop('value');
+    $(obj).siblings('input[type="range"]').prop('value', camera_params[param_name]);
   }
-
-  $('.tabcontent > input [type="range"]').on("change", onChangeSlider);
-  $('.tabcontent > input [type="text"]').on("change", onChangeText);
 
   function openSetting(evt, SettingName) {
       // Declare all variables
@@ -83,8 +80,8 @@
       success: function(){
         load_stream();
         // Simulate the user clicking on the hidden download link to prompt to save the image
-        $('#capture_link').trigger('click');
-      }
+        $('#capture_link')[0].click();
+      },
       error: function(){
         load_stream();
         alert('Error when attempting to capture image');
@@ -110,6 +107,16 @@
   // Execute this when document has loaded
   $(function(){
     load_stream();
+    $('.tabcontent > input[type="range"]').each(function(){
+      $(this).on("change", function(){
+        onChangeSlider(this);
+      });
+    });
+    $('.tabcontent > input[type="text"]').each(function(){
+      $(this).on("change", function(){
+        onChangeText(this);
+      });
+    });
   });
   </script>
   <title>WaterScope</title>
@@ -120,13 +127,13 @@
   <div id="stream_container"></div>
   <div class="button">
     <button class="click" onclick="capture(camera_params);">Capture Photo</button>
-    <a id="capture_link" href="static/capture.jpg" hidden download></a>
+    <a id="capture_link" href="static/capture.jpg" hidden download>Download</a>
   </div>
   
   <br/>
   
   <h2 class="header">Motor Control</h2>
-  <div class="button"><button class="plane_control">&#x25B2</button>
+  <div class="button"><button class="plane_control">&#x25B2</button></div>
   <div class="button">
     <button class="plane_control">&#x25C0</button>
     <button class="plane_control">&#x25BC</button>

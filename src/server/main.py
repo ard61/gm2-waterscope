@@ -3,9 +3,8 @@ import time
 import subprocess
 import flask
 
-# TODO: FIX FileNotFoundError when trying to connect to motor board
-#import fergboard_motors  # fergboard_motors.py
-#motors = fergboard_motors.Motors()
+import fergboard_motors  # fergboard_motors.py
+motors = fergboard_motors.Motors()
 
 app = flask.Flask(__name__)
 
@@ -153,9 +152,9 @@ def capture():
 @app.route('/move', methods=['GET'])
 def move():
     get_args = flask.request.args
-    x = get_args.get('X', 0)
-    y = get_args.get('Y', 0)
-    z = get_args.get('Z', 0)
+    x = get_args.get('x', 0, int)
+    y = get_args.get('y', 0, int)
+    z = get_args.get('z', 0, int)
 
     motors.move(x, y, z)
     return flask.Response(status="200 OK")
