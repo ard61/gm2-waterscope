@@ -137,7 +137,6 @@ def capture():
                        '-br', str(get_args['brightness']), '-sa', str(get_args['saturation'])]
     raspistill_proc = subprocess.Popen(raspistill_args)
     raspistill_proc.wait()
-        
 
     # Start the stream again, with the previous parameters implied
     stream_args = stream.safe_args()
