@@ -1,12 +1,17 @@
 import sys
 import time
 import subprocess
+
 import flask
-
-import fergboard_motors  # fergboard_motors.py
-motors = fergboard_motors.Motors()
-
 app = flask.Flask(__name__)
+
+import fergboard  # fergboard_motors.py
+motors = fergboard.Motors()
+
+import arduino  # arduino.py
+arduino_uno = arduino.Arduino()
+arduino_uno.setup()
+
 
 class MJpegStream():
     def __init__(self):
@@ -157,3 +162,26 @@ def move():
 
     motors.move(x, y, z)
     return flask.Response(status="200 OK")
+
+@app.route('/led', methods=['GET'])
+def led():
+    if "led" in flask.request.args:
+        led_state = flask.request.args["led"]
+        if led_state == "on":
+            arduino_uno.led(True)
+        elif led_state == "off":
+            arduino_uno.led(False)
+        return flask.Response(status="200 OK")
+    else:
+        if arduino_uno.led():
+            return flask.jsonify({"led": "on"})
+        else:
+            return flask.jsonify({"led": "off"})
+
+@app.route('/microswitch', methods=['GET'])
+def microswitch():
+    microswitch_state = arduino_uno.microswitch()
+    if microswitch_state is True:
+        return flask.jsonify({"microswitch": "on"})
+    else:
+        return flask.jsonify({"microswitch": "off"})

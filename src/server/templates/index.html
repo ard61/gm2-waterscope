@@ -50,10 +50,12 @@
       evt.currentTarget.className += " active";
   }
 
-  const STREAM_CTL_URL = 'start_stream';
-  const MOTOR_CTL_URL = 'move';
-  const CAPTURE_URL = 'capture';
   const STREAM_URL = 'http://172.24.1.1:8080/?action=stream';
+  const STREAM_CTL_URL = 'start_stream';
+  const CAPTURE_URL = 'capture';
+  const MOTOR_CTL_URL = 'move';
+  const LED_CTL_URL = 'led';
+  const MICROSWITCH_URL = 'microswitch';
 
   function start_stream(params){
     $.ajax({
@@ -103,7 +105,37 @@
     });
   }
 
+  function toggle_led(){
+    let checked = $("#led_toggle").prop("checked");
+    $.ajax({
+      url: LED_CTL_URL,
+      data: {led: (checked == true ? "on" : "off")},
+      error: function(){
+        alert('Could not toggle LED. Make sure the Arduino is connected and set up with the nanpy firmware.');
+      }
+    });
+  }
   
+  function get_microswitch_status(){
+    $.ajax({
+      url: MICROSWITCH_URL,
+      success: function(data){
+        if (data["microswitch"] == "on"){
+          $(".microswitch").addClass("active");
+        }
+        else if (data["microswitch"] == "off"){
+          $(".microswitch").removeClass("active");
+        }
+        else {
+          alert('Error processing microswitch status from server.');
+        }
+      },
+      error: function(){
+        alert('Could not obtain microswitch status. Make sure the Arduino is connected and set up with the nanpy firmware.');
+      }
+    });
+  }
+
   // Execute this when document has loaded
   $(function(){
     load_stream(camera_params['width'], camera_params['height']);
@@ -181,14 +213,14 @@
     <input type="text" value="0"/>
   </div>
   
-  <button class="apply">Apply</button>
+  <button class="apply" onclick="start_stream(camera_params);">Apply</button>
   
   <h2 class="header">Other Controls</h2>
   
   <div>
   <h3 class="sub_header">Toggle on LED</h3>
-      <label class="switch"><input type="checkbox"/>
-      <div class="slider round"></div></label>  
+      <label class="switch"><input id="led_toggle" type="checkbox"/>
+      <div class="slider round"></div></label>
   </div>
   
   <div>
