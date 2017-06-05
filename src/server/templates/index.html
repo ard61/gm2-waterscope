@@ -116,9 +116,13 @@
     });
   }
   
-  function get_microswitch_status(){
+  function poll_microswitch_status(){
+    cur_state = $(".microswitch")[0].hasClass("active");
     $.ajax({
       url: MICROSWITCH_URL,
+      data: {
+        prev_state: cur_state ? "on" : "off",
+      },
       success: function(data){
         if (data["microswitch"] == "on"){
           $(".microswitch").addClass("active");
@@ -129,10 +133,13 @@
         else {
           alert('Error processing microswitch status from server.');
         }
+        // Recursively call our function again
+        const timeout = 500  // 0.5 seconds
+        setTimeout(poll_microswitch_status, timeout);
       },
       error: function(){
         alert('Could not obtain microswitch status. Make sure the Arduino is connected and set up with the nanpy firmware.');
-      }
+      },
     });
   }
 
@@ -149,6 +156,7 @@
         onChangeText(this);
       });
     });
+    poll_microswitch_status();
   });
   </script>
   <title>WaterScope</title>
@@ -219,13 +227,13 @@
   
   <div>
   <h3 class="sub_header">Toggle on LED</h3>
-      <label class="switch"><input id="led_toggle" type="checkbox"/>
+      <label class="switch"><input id="led_toggle" type="checkbox" onchange="toggle_led();"/>
       <div class="slider round"></div></label>
   </div>
   
   <div>
   <h3 class="sub_header">Microswitch Status</h3>
-  <div class="button"><span class="microswitch"></span><div/>
+  <div class="button"><span class="microswitch active"></span><div/>
   <div/>
   
   </body>

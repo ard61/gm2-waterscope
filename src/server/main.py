@@ -180,6 +180,25 @@ def led():
 
 @app.route('/microswitch', methods=['GET'])
 def microswitch():
+    prev_state = flask.request.get("prev_state")
+    if prev_state == "on":
+        prev_state = True
+    elif prev_state == "off":
+        prev_state = False
+    else:
+        prev_state = None
+
+    if prev_state is not None:
+        # If prev_state is set, we implement long polling, i.e. only returning a
+        # response if the state has changed or the timeout expires
+        timeout = 20  # 20s timeout
+        start_time = time.time()
+        while time.time() < start_time + timeout:
+            microswitch_state = arduino_uno.microswitch()
+            if microswitch_state != prev_state:
+                break
+            sleep(0.1)
+
     microswitch_state = arduino_uno.microswitch()
     if microswitch_state is True:
         return flask.jsonify({"microswitch": "on"})

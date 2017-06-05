@@ -10,7 +10,7 @@ class Arduino:
 
     def setup(self):
         self.connection = nanpy.SerialManager(device=self.DEVICE)
-        self.arduino = nanpy.ArduinoApi(connection=connection)
+        self.arduino = nanpy.ArduinoApi(connection=self.connection)
         a = self.arduino
         a.pinMode(PIN_LED, a.OUTPUT)
         a.pinMode(PIN_SWITCH, a.INPUT)

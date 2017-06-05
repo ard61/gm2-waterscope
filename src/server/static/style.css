@@ -148,8 +148,8 @@ input:checked + .slider:before {
   opacity: 1;
 }
 
-microswitch.active { 
-  background-color: #000000;
+.microswitch.active { 
+  background-color: green;
   opacity: 1; 
-  box-shadow: 0 0 10px #000000;
+  box-shadow: 0 0 10px green;
 }
