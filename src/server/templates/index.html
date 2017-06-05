@@ -133,12 +133,19 @@
   <br/>
   
   <h2 class="header">Motor Control</h2>
-  <div class="button"><button class="plane_control" onclick="move(0, 500, 0);">&#x25B2</button></div>
+
+  <h2 class="sub_header">Plane Movement</h2>
+  <div class="button"><button class="motor_control" onclick="move(0, 500, 0);">&#x25B2</button></div> <!--Move positive Y direction-->
   <div class="button">
-    <button class="plane_control" onclick="move(-500, 0, 0);">&#x25C0</button>
-    <button class="plane_control" onclick="move(0, -500, 0);">&#x25BC</button>
-    <button class="plane_control" onclick="move(0, 500, 0);">&#x25BA</button>
+    <button class="motor_control" onclick="move(-500, 0, 0);">&#x25C0</button> <!--Move negative X direction-->
+    <button class="motor_control" onclick="move(0, -500, 0);">&#x25BC</button> <!--Move negative Y direction-->
+    <button class="motor_control" onclick="move(500, 0, 0);">&#x25BA</button>  <!--Move positive X direction-->
+
   </div>
+  
+  <h2 class="sub_header">Vertical Movement</h2>  
+  <div class="button"><button class="motor_control" onclick="move(0, 0, 500);">&#x25B2</button></div> <!--Move positive Z direction-->
+  <div class="button"><button class="motor_control" onclick="move(0, 0, -500);">&#x25BC</button></div> <!--Move negative Z direction-->
   
   <br/>
   
@@ -153,27 +160,41 @@
   <div id="sharpness" class="tabcontent">
     <p>Change the sharpness of the video stream</p>
     <input type="range" min="-100" max="100" step="10" />
-    <input type="text" value="0">
+    <input type="text" value="0"/>
   </div>
 
   <div id="brightness" class="tabcontent">
     <p>Change the brightness of the video stream</p>
     <input type="range" min="0" max="100" step="10" />
-    <input type="text" value="50">
+    <input type="text" value="50"/>
   </div>
 
   <div id="contrast" class="tabcontent">
     <p>Change the contrast of the video stream</p>
     <input type="range" min="-100" max="100" step="10" />
-    <input type="text" value="0">
+    <input type="text" value="0"/>
   </div>
     
   <div id="saturation" class="tabcontent">
     <p>Change the saturation of the video stream</p>
     <input type="range" min="-100" max="100" step="10" />
-    <input type="text" value="0">
+    <input type="text" value="0"/>
   </div>
-  <div >
+  
+  <button class="apply">Apply</button>
+  
+  <h2 class="header">Other Controls</h2>
+  
+  <div>
+  <h3 class="sub_header">Toggle on LED</h3>
+      <label class="switch"><input type="checkbox"/>
+      <div class="slider round"></div></label>  
   </div>
-</body>
+  
+  <div>
+  <h3 class="sub_header">Microswitch Status</h3>
+  <div class="button"><span class="microswitch"></span><div/>
+  <div/>
+  
+  </body>
 </html>
