@@ -7,13 +7,15 @@ class Arduino:
         self.PIN_SWITCH = 10  # Pin number for switch
         self.PIN_LED = 7  # Pin number for LED
         self.led_state = False  # LED is off by default
+        self.connected = False
 
-    def setup(self):
+    def connect(self):
         self.connection = nanpy.SerialManager(device=self.DEVICE)
         self.arduino = nanpy.ArduinoApi(connection=self.connection)
         a = self.arduino
         a.pinMode(PIN_LED, a.OUTPUT)
         a.pinMode(PIN_SWITCH, a.INPUT)
+        self.connected = True
 
     def debounce(self, pin):
         a = self.arduino

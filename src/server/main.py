@@ -10,7 +10,6 @@ motors = fergboard.Motors()
 
 import arduino  # arduino.py
 arduino_uno = arduino.Arduino()
-arduino_uno.setup()
 
 
 class MJpegStream():
@@ -155,6 +154,9 @@ def capture():
 
 @app.route('/move', methods=['GET'])
 def move():
+    if not motors.connected:
+        motors.connect()
+
     get_args = flask.request.args
     x = get_args.get('x', 0, int)
     y = get_args.get('y', 0, int)
@@ -165,6 +167,9 @@ def move():
 
 @app.route('/led', methods=['GET'])
 def led():
+    if not arduino_uno.connected:
+        arduino_uno.connect()
+
     if "led" in flask.request.args:
         led_state = flask.request.args["led"]
         if led_state == "on":
@@ -180,6 +185,9 @@ def led():
 
 @app.route('/microswitch', methods=['GET'])
 def microswitch():
+    if not arduino_uno.connected:
+        arduino_uno.connect()
+
     prev_state = flask.request.get("prev_state")
     if prev_state == "on":
         prev_state = True
