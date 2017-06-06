@@ -1,3 +1,6 @@
+"""
+Thanks to Fergus Riche: https://github.com/fr293/motor_board for the board, the code and the expertise!
+"""
 import smbus
 
 class Motors():

@@ -13,8 +13,8 @@ class Arduino:
         self.connection = nanpy.SerialManager(device=self.DEVICE)
         self.arduino = nanpy.ArduinoApi(connection=self.connection)
         a = self.arduino
-        a.pinMode(PIN_LED, a.OUTPUT)
-        a.pinMode(PIN_SWITCH, a.INPUT)
+        a.pinMode(self.PIN_LED, a.OUTPUT)
+        a.pinMode(self.PIN_SWITCH, a.INPUT)
         self.connected = True
 
     def debounce(self, pin):
@@ -37,10 +37,10 @@ class Arduino:
         """
         a = self.arduino
         if led_state == True:
-            a.digitalWrite(PIN_LED, a.HIGH)
+            a.digitalWrite(self.PIN_LED, a.HIGH)
             self.led_state = True
         elif led_state == False:
-            a.digitalWrite(PIN_LED, a.LOW)
+            a.digitalWrite(self.PIN_LED, a.LOW)
             self.led_state = False
         else:
             return self.led_state
