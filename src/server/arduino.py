@@ -49,7 +49,7 @@ class Arduino:
         """
         Returns True if microswitch is pressed, False otherwise
         """
-        if debounce(self.PIN_SWITCH) == 0:
+        if self.debounce(self.PIN_SWITCH) == 0:
             return True
         else:
             return False

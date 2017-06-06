@@ -2,6 +2,8 @@ import sys
 import time
 import subprocess
 
+from werkzeug.datastructures import MultiDict
+
 import flask
 app = flask.Flask(__name__)
 
@@ -15,15 +17,15 @@ arduino_uno = arduino.Arduino()
 class MJpegStream():
     def __init__(self):
         self.proc = None
-        self.params = {}
+        self.params = MultiDict()
 
-    def start(self, **params):
+    def start(self, params):
         """
         Start mjpg-streamer, wait until it has warmed up, and return success/failure
         """
         if self.proc:
             self.stop()
-        self.proc = subprocess.Popen(self.create_args(**params),
+        self.proc = subprocess.Popen(self.create_args(params),
                                      stderr=subprocess.PIPE, universal_newlines=True)
 
         # Block until we have read the line "Encoder Buffer Size" from stderr.
@@ -54,7 +56,7 @@ class MJpegStream():
             self.proc.wait()
         self.proc = None
 
-    def create_args(self, **params):
+    def create_args(self, params):
         return ['mjpg_streamer', '-o', 'output_http.so -w ./www', '-i', 
                 'input_raspicam.so -x {0} -y {1} -fps {2} -sh {3} -co {4} -br {5} -sa {6}'
                     .format(params['width'],
@@ -65,14 +67,14 @@ class MJpegStream():
                             params['brightness'], 
                             params['saturation'])]
 
-    def safe_args(self, **params):
-        width = params.get('width')
-        height = params.get('height')
-        fps = params.get('fps')
-        sharpness = params.get('sharpness')
-        contrast = params.get('contrast')
-        brightness = params.get('brightness')
-        saturation = params.get('saturation')
+    def safe_args(self, params=MultiDict()):
+        width = params.get('width', type=int)
+        height = params.get('height', type=int)
+        fps = params.get('fps', type=int)
+        sharpness = params.get('sharpness', type=int)
+        contrast = params.get('contrast', type=int)
+        brightness = params.get('brightness', type=int)
+        saturation = params.get('saturation', type=int)
 
         # Do some error checking for security, as we pass those values on to mjpg_streamer.
         supported_resolutions = [(1280, 720),
@@ -94,7 +96,7 @@ class MJpegStream():
         if saturation not in range(-100,101):
             saturation = self.params.get('saturation', 0)
 
-        return {
+        return MultiDict({
             "width": width,
             "height": height,
             "fps": fps,
@@ -102,10 +104,10 @@ class MJpegStream():
             "contrast": contrast,
             "brightness": brightness,
             "saturation": saturation,
-        }
+        })
 
 stream = MJpegStream()
-stream.start(**stream.safe_args())
+stream.start(params=stream.safe_args())
 
 @app.route('/', methods=['GET'])
 def index():
@@ -117,8 +119,8 @@ def start_stream():
     Restarts the mjpg-streamer stream, waits to see if it has completed
     properly, and returns success/error.
     """
-    get_args = stream.safe_args(**flask.request.args)
-    if stream.start(**get_args):
+    get_args = stream.safe_args(flask.request.args)
+    if stream.start(get_args):
         return flask.Response(status="200 OK")
     else:
         return flask.Response(status="500 INTERNAL SERVER ERROR")
@@ -132,7 +134,7 @@ def capture():
     # Need to stop the stream first
     stream.stop()
 
-    get_args = stream.safe_args(**flask.request.args)
+    get_args = stream.safe_args(flask.request.args)
 
     raspistill_args = ['raspistill', '--width', '2592', '--height', '1944',
                        '--nopreview', '--output', 'static/capture.jpg', '--timeout', '1500',
@@ -144,7 +146,7 @@ def capture():
 
     # Start the stream again, with the previous parameters implied
     stream_args = stream.safe_args()
-    stream.start(**stream_args)
+    stream.start(stream_args)
 
     if raspistill_proc.returncode == 0:
         return flask.Response(status="200 OK")
@@ -158,9 +160,9 @@ def move():
         motors.connect()
 
     get_args = flask.request.args
-    x = get_args.get('x', 0, int)
-    y = get_args.get('y', 0, int)
-    z = get_args.get('z', 0, int)
+    x = get_args.get('x', default=0, type=int)
+    y = get_args.get('y', default=0, type=int)
+    z = get_args.get('z', default=0, type=int)
 
     motors.move(x, y, z)
     return flask.Response(status="200 OK")
@@ -188,7 +190,7 @@ def microswitch():
     if not arduino_uno.connected:
         arduino_uno.connect()
 
-    prev_state = flask.request.get("prev_state")
+    prev_state = flask.request.args.get("prev_state")
     if prev_state == "on":
         prev_state = True
     elif prev_state == "off":
@@ -205,7 +207,7 @@ def microswitch():
             microswitch_state = arduino_uno.microswitch()
             if microswitch_state != prev_state:
                 break
-            sleep(0.1)
+            time.sleep(0.1)
 
     microswitch_state = arduino_uno.microswitch()
     if microswitch_state is True:
