@@ -11,4 +11,4 @@ class Motors():
     def move(self, x, y, z):
         self.bus.write_byte_data(8, x >> 8, x & 255)
         self.bus.write_byte_data(16, y >> 8, y & 255)
-        self.bus.write_byte_data(24, z >> 8, z & 255):
+        self.bus.write_byte_data(24, z >> 8, z & 255)
