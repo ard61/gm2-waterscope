@@ -107,7 +107,11 @@ class MJpegStream():
         })
 
 stream = MJpegStream()
-stream.start(params=stream.safe_args())
+# Try to start mjpg-streamer right now, but don't crash if it fails.
+try:
+    stream.start(params=stream.safe_args())
+except Exception:
+    pass
 
 @app.route('/', methods=['GET'])
 def index():
